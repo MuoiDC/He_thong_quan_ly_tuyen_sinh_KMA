@@ -1,0 +1,25 @@
+| **Tên thành viên** | **Mã UC**                      | **Tên Use Case**             |
+| ------------------ | ------------------------------ | ---------------------------- |
+| Mười               | UC6                            | Tương tác chatbot AI         |
+| UC7                | Nộp hồ sơ xét tuyển            |
+| UC13               | Xét duyệt hồ sơ                |
+| UC15               | Công bố kết quả xét tuyển      |
+| UC17               | Phân quyền hệ thống            |
+|                    |                                |                              |
+| Minh               | UC4                            | Xem thông tin tuyển sinh     |
+| UC12               | Quản lý thông tin tuyển sinh   |
+| UC18               | Quản lý cơ sở tri thức chatbot |
+|                    |                                |                              |
+| Sang               | UC5                            | Tra cứu thông tin tuyển sinh |
+| UC16               | Quản lý tài khoản người dùng   |
+| UC14               | Cập nhật trạng thái hồ sơ      |
+| UC19               | Xuất báo cáo hệ thống          |
+|                    |                                |                              |
+| Khánh              | UC1                            | Đăng ký tài khoản            |
+| UC2                | Đăng nhập                      |
+| UC3                | Cập nhật tài khoản cá nhân     |
+| UC5                | Tra cứu thông tin tuyển sinh   |
+| UC8                | Chỉnh sửa hồ sơ xét tuyển      |
+| UC9                | Xem trạng thái hồ sơ           |
+| UC10               | Tra cứu kết quả xét tuyển      |
+| UC11               | Xác nhận nhập học              |
