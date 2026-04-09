@@ -4,6 +4,58 @@ title Hình 5.1: Các hệ thống con và giao diện
 
 
 ' ===================== INTERFACES =====================
+interface IAccountService {
+  ' UC1
+  + validateRegistrationData(name: String, email: String,\n  phone: String, password: String) : ValidationResult
+  ' UC2
+  + recordFailedLogin(email: String) : Integer
+  + getFailedLoginCount(email: String) : Integer
+  + temporaryLockUser(email: String, durationMinutes: Integer) : Boolean
+  ' UC3
+  + verifyPassword(userId: String, password: String) : Boolean
+  + updateAvatar(userId: String, fileUrl: String) : Boolean
+}
+
+interface IAdmissionService {
+  ' UC8
+  + getApplicationVersions(id: String) : List<PhienBanHoSo>
+  ' UC9
+  + getApplicationHistory(id: String) : List<LichSuTrangThai>
+  ' UC10
+  + getResultPublicationStatus() : PublicationStatus
+  + markResultViewed(userId: String) : Boolean
+  ' UC11
+  + declineEnrollment(userId: String, reason: String) : Boolean
+  + getEnrollmentStatus(userId: String) : ThiSinhNhapHoc
+}
+
+interface IAdmissionDatabase {
+  ' UC8
+  + saveApplicationVersion(version: PhienBanHoSo) : Boolean
+  + findVersionsByApplication(appId: String) : List<PhienBanHoSo>
+  ' UC9
+  + saveStatusHistory(history: LichSuTrangThai) : Boolean
+  + findStatusHistoryByApplication(appId: String) : List<LichSuTrangThai>
+  ' UC10
+  + markResultViewed(userId: String) : Boolean
+  ' UC11
+  + findEnrollmentByUser(userId: String) : ThiSinhNhapHoc
+}
+
+interface INotificationService {
+  ' UC2
+  + sendAccountLockedEmail(email: String, unlockAt: DateTime) : Boolean
+  ' UC11
+  + sendEnrollmentDeclineEmail(userId: String) : Boolean
+}
+
+interface ILogDatabase {
+  ' UC2
+  + saveLoginLog(log: LogDangNhap) : Boolean
+  + getRecentFailedCount(email: String, withinMinutes: Integer) : Integer
+  ' UC3
+  + saveAuditLog(log: LogThayDoiThongTin) : Boolean
+}
 
 interface IAccountService {
   + register(name: String, email: String, phone: String, password: String) : Boolean
@@ -156,7 +208,48 @@ package "<<subsystem>>\nDatabaseSubsystem" as DatabaseSS {
 }
 
 ' ===================== ENTITIES =====================
+class LogDangNhap <<entity>> {
+  - id: String
+  - email: String
+  - ipAddress: String
+  - success: Boolean
+  - failedCount: Integer
+  - timestamp: DateTime
+}
 
+class LogThayDoiThongTin <<entity>> {
+  - id: String
+  - userId: String
+  - fieldName: String
+  - oldValue: String
+  - newValue: String
+  - changedAt: DateTime
+}
+
+class PhienBanHoSo <<entity>> {
+  - id: String
+  - hoSoId: String
+  - versionNumber: Integer
+  - snapshotData: String
+  - savedAt: DateTime
+  - savedBy: String
+}
+
+class LichSuTrangThai <<entity>> {
+  - id: String
+  - hoSoId: String
+  - trangThaiCu: TrangThai
+  - trangThaiMoi: TrangThai
+  - changedBy: String
+  - note: String
+  - changedAt: DateTime
+}
+
+class PublicationStatus <<entity>> {
+  - isPublished: Boolean
+  - publishedAt: DateTime
+  - expectedAt: DateTime
+}
 class TaiKhoan <<entity>> {
   - id: String
   - email: String
