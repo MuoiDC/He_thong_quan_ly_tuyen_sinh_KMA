@@ -1,0 +1,310 @@
+@startuml
+title Hình 5.1: Các hệ thống con và giao diện
+
+
+
+' ===================== INTERFACES =====================
+
+interface IAccountService {
+  + register(name: String, email: String, phone: String, password: String) : Boolean
+  + verifyEmail(token: String) : Boolean
+  + resendVerificationEmail(email: String) : Boolean
+  + login(email: String, password: String) : Session
+  + logout(sessionId: String) : void
+  + changePassword(userId: String, oldPwd: String, newPwd: String) : Boolean
+  + getUserById(id: String) : TaiKhoan
+  + getAllUsers(filter: FilterParams) : List<TaiKhoan>
+  + updateUser(id: String, info: UserInfo) : Boolean
+  + lockUser(id: String, reason: String) : Boolean
+  + unlockUser(id: String) : Boolean
+  + deleteUser(id: String) : Boolean
+  + assignRole(userId: String, role: VaiTro) : Boolean
+  + revokeRole(userId: String, role: VaiTro) : Boolean
+}
+
+interface ISessionManager {
+  + createSession(userId: String, role: VaiTro) : Session
+  + getSession(sessionId: String) : Session
+  + invalidateSession(sessionId: String) : void
+  + invalidateAllSessions(userId: String) : void
+  + refreshSession(sessionId: String) : Session
+}
+
+interface IAdmissionService {
+  + getPostList(filter: FilterParams) : List<BaiDangTuyenSinh>
+  + getPostById(id: String) : BaiDangTuyenSinh
+  + searchPosts(keyword: String, filter: FilterParams) : List<BaiDangTuyenSinh>
+  + createPost(data: PostData) : BaiDangTuyenSinh
+  + updatePost(id: String, data: PostData) : Boolean
+  + deletePost(id: String) : Boolean
+  + submitApplication(userId: String, data: ApplicationData) : HoSo
+  + editApplication(id: String, data: ApplicationData) : Boolean
+  + getApplicationById(id: String) : HoSo
+  + getApplicationsByUser(userId: String) : List<HoSo>
+  + getApplicationStatus(id: String) : TrangThai
+  + getPendingApplications(filter: FilterParams) : List<HoSo>
+  + reviewApplication(id: String, decision: String, note: String) : Boolean
+  + updateApplicationStatusManual(id: String, status: TrangThai, reason: String) : Boolean
+  + publishResult(data: PublishData) : Boolean
+  + cancelPublish(resultId: String, reason: String) : Boolean
+  + getResult(userId: String) : KetQuaXetTuyen
+  + confirmEnrollment(userId: String, confirm: Boolean) : Boolean
+}
+
+interface IChatbotService {
+  + chat(sessionId: String, message: String) : String
+  + getKnowledgeList() : List<CoSoTriThuc>
+  + addKnowledge(data: KnowledgeData) : Boolean
+  + importKnowledge(file: File) : Boolean
+  + updateKnowledge(id: String, data: KnowledgeData) : Boolean
+  + deleteKnowledge(id: String) : Boolean
+  + retrainModel() : Boolean
+  + syncModel() : Boolean
+}
+
+interface INotificationService {
+  + sendEmail(to: String, subject: String, body: String) : Boolean
+  + sendVerificationEmail(email: String, token: String) : Boolean
+  + sendApplicationStatusEmail(userId: String, status: String, note: String) : Boolean
+  + sendResultEmail(userId: String, result: String) : Boolean
+  + broadcastResultEmail(userIds: List<String>) : Boolean
+  + sendEnrollmentConfirmEmail(userId: String) : Boolean
+  + sendRoleChangeEmail(userId: String, newRole: VaiTro) : Boolean
+}
+
+interface IReportService {
+  + getAvailableReportTypes() : List<String>
+  + generateReport(type: ReportType, params: FilterParams, format: String) : BaoCao
+  + scheduleReport(type: ReportType, params: FilterParams, format: String) : String
+  + getReportStatus(jobId: String) : String
+  + exportToExcel(data: ReportData) : File
+  + exportToPDF(data: ReportData) : File
+}
+
+interface IAccountDatabase {
+  + findByEmail(email: String) : TaiKhoan
+  + findById(id: String) : TaiKhoan
+  + findAll(filter: FilterParams) : List<TaiKhoan>
+  + save(account: TaiKhoan) : Boolean
+  + update(id: String, data: TaiKhoan) : Boolean
+  + delete(id: String) : Boolean
+  + updateRole(id: String, role: VaiTro) : Boolean
+  + updateStatus(id: String, status: TrangThai) : Boolean
+}
+
+interface IAdmissionDatabase {
+  + savePost(post: BaiDangTuyenSinh) : Boolean
+  + updatePost(id: String, data: BaiDangTuyenSinh) : Boolean
+  + deletePost(id: String) : Boolean
+  + findPostById(id: String) : BaiDangTuyenSinh
+  + findAllPosts(filter: FilterParams) : List<BaiDangTuyenSinh>
+  + saveApplication(app: HoSo) : Boolean
+  + updateApplication(id: String, data: HoSo) : Boolean
+  + findApplicationById(id: String) : HoSo
+  + findApplicationsByUser(userId: String) : List<HoSo>
+  + findPendingApplications(filter: FilterParams) : List<HoSo>
+  + saveResult(result: KetQuaXetTuyen) : Boolean
+  + updateResult(id: String, data: KetQuaXetTuyen) : Boolean
+  + findResultByUser(userId: String) : KetQuaXetTuyen
+  + saveEnrollment(enrollment: ThiSinhNhapHoc) : Boolean
+}
+
+interface IChatbotDatabase {
+  + saveKnowledge(data: CoSoTriThuc) : Boolean
+  + findKnowledgeById(id: String) : CoSoTriThuc
+  + findAllKnowledge() : List<CoSoTriThuc>
+  + updateKnowledge(id: String, data: CoSoTriThuc) : Boolean
+  + deleteKnowledge(id: String) : Boolean
+  + saveConversationLog(log: LogHoiThoai) : Boolean
+  + findLogsBySession(sessionId: String) : List<LogHoiThoai>
+}
+
+interface IReportDatabase {
+  + saveReport(report: BaoCao) : Boolean
+  + findReportById(id: String) : BaoCao
+  + findAllReports(filter: FilterParams) : List<BaoCao>
+  + deleteExpiredReports(before: DateTime) : void
+}
+
+interface ILogDatabase {
+  + saveLog(log: LogHoatDong) : Boolean
+  + findLogs(filter: FilterParams) : List<LogHoatDong>
+  + findLogsByActor(actorId: String) : List<LogHoatDong>
+  + findLogsByTarget(targetId: String) : List<LogHoatDong>
+}
+
+' ===================== SUBSYSTEMS =====================
+
+package "<<subsystem>>\nAccountSubsystem" as AccountSS {
+}
+
+package "<<subsystem>>\nAdmissionSubsystem" as AdmissionSS {
+}
+
+package "<<subsystem>>\nChatbotSubsystem" as ChatbotSS {
+}
+
+package "<<subsystem>>\nNotificationSubsystem" as NotifSS {
+}
+
+package "<<subsystem>>\nReportSubsystem" as ReportSS {
+}
+
+package "<<subsystem>>\nDatabaseSubsystem" as DatabaseSS {
+}
+
+' ===================== ENTITIES =====================
+
+class TaiKhoan <<entity>> {
+  - id: String
+  - email: String
+  - passwordHash: String
+  - name: String
+  - phone: String
+  - status: TrangThai
+  - createdAt: DateTime
+}
+
+class VaiTro <<entity>> {
+  - id: String
+  - name: String
+  - permissions: List<String>
+}
+
+class HoSo <<entity>> {
+  - id: String
+  - maHoSo: String
+  - userId: String
+  - nganh: String
+  - phuongThuc: String
+  - status: TrangThai
+  - submittedAt: DateTime
+  - note: String
+}
+
+class TaiLieu <<entity>> {
+  - id: String
+  - hoSoId: String
+  - fileName: String
+  - fileType: String
+  - fileUrl: String
+  - uploadedAt: DateTime
+}
+
+class BaiDangTuyenSinh <<entity>> {
+  - id: String
+  - title: String
+  - content: String
+  - nganh: String
+  - chiTieu: Integer
+  - status: String
+  - publishedAt: DateTime
+}
+
+class KetQuaXetTuyen <<entity>> {
+  - id: String
+  - hoSoId: String
+  - userId: String
+  - result: String
+  - publishedAt: DateTime
+  - isPublished: Boolean
+}
+
+class ThiSinhNhapHoc <<entity>> {
+  - id: String
+  - userId: String
+  - hoSoId: String
+  - confirmedAt: DateTime
+  - status: String
+}
+
+class CoSoTriThuc <<entity>> {
+  - id: String
+  - question: String
+  - keywords: String
+  - answer: String
+  - category: String
+  - version: Integer
+  - updatedAt: DateTime
+}
+
+class LogHoiThoai <<entity>> {
+  - id: String
+  - sessionId: String
+  - userId: String
+  - message: String
+  - response: String
+  - timestamp: DateTime
+}
+
+class BaoCao <<entity>> {
+  - id: String
+  - type: String
+  - format: String
+  - fileUrl: String
+  - createdBy: String
+  - createdAt: DateTime
+  - expiredAt: DateTime
+}
+
+class LogHoatDong <<entity>> {
+  - id: String
+  - actorId: String
+  - action: String
+  - targetType: String
+  - targetId: String
+  - note: String
+  - timestamp: DateTime
+}
+
+' ===================== REALIZATIONS =====================
+
+AccountSS ..|> IAccountService
+AccountSS ..|> ISessionManager
+AdmissionSS ..|> IAdmissionService
+ChatbotSS ..|> IChatbotService
+NotifSS ..|> INotificationService
+ReportSS ..|> IReportService
+DatabaseSS ..|> IAccountDatabase
+DatabaseSS ..|> IAdmissionDatabase
+DatabaseSS ..|> IChatbotDatabase
+DatabaseSS ..|> IReportDatabase
+DatabaseSS ..|> ILogDatabase
+
+' ===================== DEPENDENCIES (via interfaces) =====================
+
+AccountSS ..> IAccountDatabase : <<use>>
+AccountSS ..> ILogDatabase : <<use>>
+AccountSS ..> INotificationService : <<use>>
+
+AdmissionSS ..> IAdmissionDatabase : <<use>>
+AdmissionSS ..> IAccountDatabase : <<use>>
+AdmissionSS ..> ILogDatabase : <<use>>
+AdmissionSS ..> INotificationService : <<use>>
+
+ChatbotSS ..> IChatbotDatabase : <<use>>
+ChatbotSS ..> ILogDatabase : <<use>>
+
+ReportSS ..> IAdmissionDatabase : <<use>>
+ReportSS ..> IAccountDatabase : <<use>>
+ReportSS ..> ILogDatabase : <<use>>
+ReportSS ..> IReportDatabase : <<use>>
+
+AccountSS ..> ISessionManager : <<use>>
+AdmissionSS ..> ISessionManager : <<use>>
+
+' ===================== DATABASE - ENTITY LINKS =====================
+
+DatabaseSS -- TaiKhoan
+DatabaseSS -- VaiTro
+DatabaseSS -- HoSo
+DatabaseSS -- TaiLieu
+DatabaseSS -- BaiDangTuyenSinh
+DatabaseSS -- KetQuaXetTuyen
+DatabaseSS -- ThiSinhNhapHoc
+DatabaseSS -- CoSoTriThuc
+DatabaseSS -- LogHoiThoai
+DatabaseSS -- BaoCao
+DatabaseSS -- LogHoatDong
+
+@enduml
