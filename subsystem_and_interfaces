@@ -31,6 +31,8 @@ interface ISessionManager {
 }
 
 interface IAdmissionService {
+  + validateFile(file: File) : Boolean
+  + validateApplicationData(data: ApplicationData) : ValidationResult
   + getPostList(filter: FilterParams) : List<BaiDangTuyenSinh>
   + getPostById(id: String) : BaiDangTuyenSinh
   + searchPosts(keyword: String, filter: FilterParams) : List<BaiDangTuyenSinh>
