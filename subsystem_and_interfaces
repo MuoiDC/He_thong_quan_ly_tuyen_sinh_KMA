@@ -107,12 +107,13 @@ interface IAdmissionService {
 interface IChatbotService {
   + chat(sessionId: String, message: String) : String
   + getKnowledgeList() : List<CoSoTriThuc>
+  + validateKnowledgeData(data: KnowledgeData)
   + addKnowledge(data: KnowledgeData) : Boolean
-  + importKnowledge(file: File) : Boolean
   + updateKnowledge(id: String, data: KnowledgeData) : Boolean
   + deleteKnowledge(id: String) : Boolean
   + retrainModel() : Boolean
   + syncModel() : Boolean
+  + flagKnowledgePendingSync(id: String)
 }
 
 interface INotificationService {
@@ -168,6 +169,7 @@ interface IChatbotDatabase {
   + findAllKnowledge() : List<CoSoTriThuc>
   + updateKnowledge(id: String, data: CoSoTriThuc) : Boolean
   + deleteKnowledge(id: String) : Boolean
+  + updateKnowledgeStatus(id, status)
   + saveConversationLog(log: LogHoiThoai) : Boolean
   + findLogsBySession(sessionId: String) : List<LogHoiThoai>
 }
