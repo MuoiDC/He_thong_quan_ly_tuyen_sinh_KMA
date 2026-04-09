@@ -111,7 +111,6 @@ interface IChatbotService {
   + addKnowledge(data: KnowledgeData) : Boolean
   + updateKnowledge(id: String, data: KnowledgeData) : Boolean
   + deleteKnowledge(id: String) : Boolean
-  + retrainModel() : Boolean
   + syncModel() : Boolean
   + flagKnowledgePendingSync(id: String)
 }
