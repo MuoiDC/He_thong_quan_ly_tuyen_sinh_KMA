@@ -58,6 +58,8 @@ interface ILogDatabase {
 }
 
 interface IAccountService {
+  + getAvailableRoles(): List<VaiTro>
+  + validateRoleAssigment(userId: String, role: VaiTro): ValidationResult
   + register(name: String, email: String, phone: String, password: String) : Boolean
   + verifyEmail(token: String) : Boolean
   + resendVerificationEmail(email: String) : Boolean
