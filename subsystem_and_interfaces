@@ -61,6 +61,7 @@ interface IAccountService {
   + getAvailableRoles(): List<VaiTro>
   + validateRoleAssigment(userId: String, role: VaiTro): ValidationResult
   + validateRoleRevocation(userId: String, role: VaiTro): ValidationResult
+  + validateAccountData(id: String, data: AccountData): ValidationResult
   + register(name: String, email: String, phone: String, password: String) : Boolean
   + verifyEmail(token: String) : Boolean
   + resendVerificationEmail(email: String) : Boolean
@@ -87,6 +88,7 @@ interface ISessionManager {
 
 interface IAdmissionService {
   + validateApplicationData(data: ApplicationData) : ValidationResult
+  + validatePostData(data: PostData): ValidationResult
   + getPostList(filter: FilterParams) : List<BaiDangTuyenSinh>
   + getPostById(id: String) : BaiDangTuyenSinh
   + searchPosts(keyword: String, filter: FilterParams) : List<BaiDangTuyenSinh>
