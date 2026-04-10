@@ -155,6 +155,7 @@ interface IAdmissionDatabase {
   + updateApplication(id: String, data: HoSo) : Boolean
   + findApplicationById(id: String) : HoSo
   + findApplicationsByUser(userId: String) : List<HoSo>
+  + findDocumentsByApplicationId(applicationId: String): List<TaiLieu>
   + findPendingApplications(filter: FilterParams) : List<HoSo>
   + saveResult(result: KetQuaXetTuyen) : Boolean
   + updateResult(id: String, data: KetQuaXetTuyen) : Boolean
