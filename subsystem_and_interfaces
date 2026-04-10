@@ -146,6 +146,9 @@ interface IAccountDatabase {
 }
 
 interface IAdmissionDatabase {
+  + getResultSummaryByMajor() : List<ResultSummary>
+  + findAdmittedResults(filter: FilterParams) : List<KetQuaXetTuyen>
+  + findAdmittedUserIds(): List<String>
   + savePost(post: BaiDangTuyenSinh) : Boolean
   + updatePost(id: String, data: BaiDangTuyenSinh) : Boolean
   + deletePost(id: String) : Boolean
